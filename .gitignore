@@ -1,6 +1,7 @@
 # FILES
 **/**/.pyc
 .DS_Store
+passwords.txt
 
 # DIRECTORIES
 **/**/__pycache__
@@ -8,4 +9,4 @@
 .pytest_cache
 src.egg-info
 htmlcov/
-./env/*
+env/
