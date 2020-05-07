@@ -8,4 +8,4 @@
 .pytest_cache
 src.egg-info
 htmlcov/
-/env/*
+./env/*
