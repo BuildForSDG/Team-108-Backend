@@ -2,6 +2,8 @@
 **/**/.pyc
 .DS_Store
 passwords.txt
+.coverage
+db.sqlite3
 
 # DIRECTORIES
 **/**/__pycache__
