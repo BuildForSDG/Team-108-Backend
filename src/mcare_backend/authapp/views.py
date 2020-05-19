@@ -55,7 +55,6 @@ def create_auth_token(sender,instance=None, created=False, **kwargs):
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_user_profile(sender, instance, created, **kwargs):
-    print(instance.role)
     if created and instance.role == "Expert":
         ExpertProfile.objects.create(user=instance)
     elif created and instance.role == "Patient":
