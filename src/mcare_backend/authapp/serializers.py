@@ -10,7 +10,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['username','email','role','password','password2']
+        fields = ['username','email','firstname','lastname','role','password','password2']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -20,6 +20,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             email = self.validated_data['email'],
             username = self.validated_data['username'],
             role = self.validated_data['role'],
+            firstname = self.validated_data['firstname'],
+            lastname = self.validated_data['lastname']
         ) 
 
         password = self.validated_data['password']

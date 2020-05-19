@@ -23,4 +23,4 @@ class CustomUserTestCase(TestCase):
     def test_CustomUsers_has_correct_number_of_fields_passed_to_it(self):
         """CustomUsers has the correct firstname"""
         number_of_fields = len(CustomUser._meta.concrete_fields)
-        self.assertEqual(number_of_fields, 12)
+        self.assertEqual(number_of_fields, 13)
