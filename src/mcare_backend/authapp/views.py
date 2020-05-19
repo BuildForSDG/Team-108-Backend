@@ -41,7 +41,7 @@ def customuser_registration_view(request):
 
 # This is just a test view for authentication purposes
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def hello_world(request):
     if request.method == 'POST':
         return Response({"message": "Got some data!", "data": request.data})
