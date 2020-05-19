@@ -4,8 +4,8 @@ from rest_framework import status
 from authapp.models import CustomUser, PatientProfile, ExpertProfile
 
 
-data_password = {
-    'password': 'password'
+data_pass = {
+    'password': 'somepassword'
 }
 
 
