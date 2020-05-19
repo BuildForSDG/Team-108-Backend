@@ -1,10 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import PermissionsMixin
 
 from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 # Create your models here.
 
@@ -102,5 +99,4 @@ class ExpertProfile(models.Model):
     # write your custom fields for Expert profile from here.
     def __str__(self):
         return self.user.username
-
-
+        

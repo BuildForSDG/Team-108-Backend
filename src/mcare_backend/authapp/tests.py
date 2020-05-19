@@ -2,20 +2,19 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from authapp.models import CustomUser, PatientProfile, ExpertProfile
-from .views import create_user_profile
 
 
 # Create your tests here.
 class CustomUserTestCase(TestCase):
     def setUp(self):
         CustomUser.objects.create(
-            email="test@gmail.com", 
-            username= "ezekieltech",
-            firstname= 'Ezekiel',
-            lastname= 'Obha',
-            password= 'password',
-            role = 'Patient'
-            )
+            email="test@gmail.com",
+            username="ezekieltech",
+            firstname='Ezekiel',
+            lastname='Obha',
+            password='password',
+            role='Patient'
+        )
         self.create_url = reverse('authapp:register')
 
     def test_create_user_valid_token(self):
@@ -32,9 +31,9 @@ class CustomUserTestCase(TestCase):
             'role': 'Patient'
         }
 
-         # URL for creating an account.
-        
-        response = self.client.post(self.create_url , data, format='json')
+        # URL for creating an account.
+
+        response = self.client.post(self.create_url, data, format='json')
 
         # We want to make sure we have two users in the database..
         self.assertEqual(CustomUser.objects.count(), 2)
@@ -54,13 +53,12 @@ class CustomUserTestCase(TestCase):
         self.assertEqual(firstname.firstname, 'Ezekiel')
         self.assertEqual(lastname.lastname, 'Obha')
         self.assertEqual(role.role, 'Patient')
-    
+
     def test_CustomUsers_has_correct_number_of_fields_passed_to_it(self):
         """CustomUsers has the correct firstname"""
         number_of_fields = len(CustomUser._meta.concrete_fields)
         self.assertEqual(number_of_fields, 13)
 
-    
     def test_customuser_registration_view_creates_patientprofile(self):
         """
         Ensure we can create a new patient profile when a new user wit 'patient' role.'
@@ -75,8 +73,8 @@ class CustomUserTestCase(TestCase):
             'role': 'Patient'
         }
 
-         # URL for creating an account.
-        response = self.client.post(self.create_url , data, format='json')
+        # URL for creating an account.
+        response = self.client.post(self.create_url, data, format='json')
 
         # And that we're returning a 201 created code.
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -98,8 +96,8 @@ class CustomUserTestCase(TestCase):
             'role': 'Expert'
         }
 
-         # URL for creating an account.
-        response = self.client.post(self.create_url , data, format='json')
+        # URL for creating an account.
+        response = self.client.post(self.create_url, data, format='json')
 
         # And that we're returning a 201 created code.
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

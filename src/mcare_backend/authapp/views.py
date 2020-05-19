@@ -1,18 +1,18 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.conf import settings
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 
 from authapp.serializers import CustomUserSerializer
 
 
-from .models import CustomUser, PatientProfile, ExpertProfile
+from .models import PatientProfile, ExpertProfile
 
 
 # Create your views here.
@@ -24,7 +24,6 @@ def customuser_registration_view(request):
         data = {}
         if serializer.is_valid():
             user = serializer.save()
-            
             data['response'] = 'Successfully registered a new user'
             data['username'] = user.username
             data['email'] = user.email
