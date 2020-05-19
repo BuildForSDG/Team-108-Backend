@@ -11,6 +11,7 @@ PATIENT = 'Patient'
 
 ROLES = [(EXPERT, 'Expert'), (PATIENT, 'Patient')]
 
+
 class MyAccountManager (BaseUserManager):
     def create_user(self, email, username, firstname, lastname, password=None):
         if not email:
@@ -75,7 +76,8 @@ class CustomUser(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
-    def has_module_perms(self, app_label):
+    @classmethod
+    def has_module_perms(cls, app_label):
         return True
 
 
@@ -84,7 +86,7 @@ class PatientProfile(models.Model):
                                 limit_choices_to={'role': 'Patient'},
                                 on_delete=models.CASCADE,
                                 related_name="patient_profile")
-    
+
     # your custom fields for Patient model
     def __str__(self):
         return self.user.username
@@ -95,8 +97,7 @@ class ExpertProfile(models.Model):
                                 limit_choices_to={'role': 'Expert'},
                                 on_delete=models.CASCADE,
                                 related_name="expert_profile")
-    
+
     # write your custom fields for Expert profile from here.
     def __str__(self):
         return self.user.username
-        
