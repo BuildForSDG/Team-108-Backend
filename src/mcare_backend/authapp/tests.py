@@ -17,7 +17,7 @@ class CustomUserTestCase(TestCase):
             username="ezekieltech",
             firstname='Ezekiel',
             lastname='Obha',
-            password=data_password.password,
+            password=data_password['password'],
             role='Patient'
         )
         self.create_url = reverse('authapp:register')
