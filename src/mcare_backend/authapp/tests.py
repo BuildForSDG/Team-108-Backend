@@ -4,7 +4,7 @@ from rest_framework import status
 from authapp.models import CustomUser, PatientProfile, ExpertProfile
 
 
-data_pass = {
+data_password = {
     'password': 'somepassword'
 }
 
@@ -17,7 +17,7 @@ class CustomUserTestCase(TestCase):
             username="ezekieltech",
             firstname='Ezekiel',
             lastname='Obha',
-            password=data_password.password
+            password=data_password['password'],
             role='Patient'
         )
         self.create_url = reverse('authapp:register')
