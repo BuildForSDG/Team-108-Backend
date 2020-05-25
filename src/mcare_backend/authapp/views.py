@@ -11,15 +11,16 @@ from rest_framework.authtoken.models import Token
 from authapp.serializers import CustomUserSerializer
 
 
-from .models import PatientProfile, ExpertProfile
+from .models import ExpertProfile
+from patients.models import PatientProfile
 
 
 # Create your views here.
-@api_view(['POST',])
+@api_view(['POST', ])
 @permission_classes([AllowAny])
 def customuser_registration_view(request):
     if request.method == 'POST':
-        serializer= CustomUserSerializer(data = request.data)
+        serializer = CustomUserSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
             user = serializer.save()
@@ -36,7 +37,6 @@ def customuser_registration_view(request):
         return Response(data, status.HTTP_201_CREATED)
 
 
-
 # This is just a test view for authentication purposes
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
@@ -47,9 +47,10 @@ def hello_world(request):
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender,instance=None, created=False, **kwargs):
+def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_user_profile(sender, instance, created, **kwargs):

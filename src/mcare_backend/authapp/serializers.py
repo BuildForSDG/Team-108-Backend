@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from authapp.models import CustomUser, PatientProfile
+from authapp.models import CustomUser
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -36,14 +36,3 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
-
-
-class PatientProfileSerializer(serializers.ModelSerializer):
-
-    owner = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
-
-    class Meta:
-        model = PatientProfile
-        fields = ('id', 'name', 'owner')
