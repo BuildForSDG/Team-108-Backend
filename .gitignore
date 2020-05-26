@@ -2,6 +2,7 @@
 **/**/.pyc
 .DS_Store
 passwords.txt
+tests_parameters.py
 .coverage
 db.sqlite3
 

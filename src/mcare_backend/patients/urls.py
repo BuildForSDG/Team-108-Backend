@@ -13,3 +13,4 @@ router.register(r'patients', PatientProfileViewSet)
 # urlpatterns = [
 #     path(r'patients/', include(router.urls)),
 # ]
+urlpatterns = router.urls
