@@ -18,10 +18,12 @@ from django.urls import path, include
 
 
 from patients.urls import router
+from experts.urls import router as expert_router
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/authuser/', include('authapp.urls')),
     path('api/v1/', include(router.urls)),
+    path('api/v1/', include(expert_router.urls)),
 ]

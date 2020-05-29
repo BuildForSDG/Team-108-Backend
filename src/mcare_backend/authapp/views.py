@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 from authapp.serializers import CustomUserSerializer
 
 
-from .models import ExpertProfile
+from experts.models import ExpertProfile
 from patients.models import PatientProfile
 
 

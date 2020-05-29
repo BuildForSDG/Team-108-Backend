@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # installed apps
     'authapp',
     'patients',
+    'experts',
 
     # for token authentication
     'rest_framework.authtoken',

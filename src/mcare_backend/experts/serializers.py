@@ -1,40 +1,14 @@
 import jsons
-
 from rest_framework import serializers
 
-from patients.models import PatientProfile, Messages, PatientGroup
+from patients.models import PatientProfile, Messages
 from authapp.models import CustomUser
-from experts.models import ExpertProfile, ExpertClass
-
-
-'''
-This RelatedField classes allows the flexibility of the model in the response object.
-By default, the pk is displayed in the post or get request. By defining this
-class, we can specify how we want the message to be represented in the
-reponse
-reference: https://stackoverflow.com/questions/55161052/instead-of-primary-key-send-different-field-in-django-rest-framework
-'''
+from experts.models import ExpertProfile, ExpertClass, ClassModules
 
 
 # todo what's the related field in seriliazers
 # todo so many repetitions. RelatedField Class and their methods,
 # todo DRY code needed here
-
-class PatientGroupRelatedField(serializers.RelatedField):
-
-    # defines how the object is displayed
-    def display_value(self, instance):
-        return instance
-
-    # defines how the object Genre is displayed in the output (JSON or XML)
-    def to_representation(self, value):
-        return str(value)
-
-    # gets an object Message for the given value
-    def to_internal_value(self, data):
-        return PatientGroup.objects.get(name=data)
-
-
 class MessagesRelatedField(serializers.RelatedField):
 
     # defines how the object is displayed
@@ -48,6 +22,21 @@ class MessagesRelatedField(serializers.RelatedField):
     # gets an object Message for the given value
     def to_internal_value(self, data):
         return Messages.objects.get(name=data)
+
+
+class ClassModulesRelatedField(serializers.RelatedField):
+
+    # defines how the object is displayed
+    def display_value(self, instance):
+        return instance
+
+    # defines how the object Genre is displayed in the output (JSON or XML)
+    def to_representation(self, value):
+        return str(value)
+
+    # gets an object Message for the given value
+    def to_internal_value(self, data):
+        return ClassModules.objects.get(name=data)
 
 
 class CustomUserRelatedField(serializers.RelatedField):
@@ -65,7 +54,7 @@ class CustomUserRelatedField(serializers.RelatedField):
         return CustomUser.objects.get(name=data)
 
 
-class PatientGroupRelatedField(serializers.RelatedField):
+class PatientProfileRelatedField(serializers.RelatedField):
 
     # defines how the object is displayed
     def display_value(self, instance):
@@ -77,22 +66,7 @@ class PatientGroupRelatedField(serializers.RelatedField):
 
     # gets an object Message for the given value
     def to_internal_value(self, data):
-        return PatientGroup.objects.get(name=data)
-
-
-class ExpertProfileRelatedField(serializers.RelatedField):
-
-    # defines how the object is displayed
-    def display_value(self, instance):
-        return instance
-
-    # defines how the object Genre is displayed in the output (JSON or XML)
-    def to_representation(self, value):
-        return str(value)
-
-    # gets an object Message for the given value
-    def to_internal_value(self, data):
-        return ExpertProfile.objects.get(name=data)
+        return PatientProfile.objects.get(name=data)
 
 
 class ExpertClassRelatedField(serializers.RelatedField):
@@ -110,7 +84,7 @@ class ExpertClassRelatedField(serializers.RelatedField):
         return ExpertClass.objects.get(name=data)
 
 
-class PatientProfileSerializer(serializers.ModelSerializer):
+class ExpertProfileSerializer(serializers.ModelSerializer):
 
     message = MessagesRelatedField(
         queryset=Messages.objects.all(),
@@ -121,13 +95,8 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         queryset=CustomUser.objects.all(),
     )
 
-    group_member = PatientGroupRelatedField(
-        queryset=PatientGroup.objects.all(),
-        many=True
-    )
-
-    assigned_experts = ExpertProfileRelatedField(
-        queryset=ExpertProfile.objects.all(),
+    assigned_patients = PatientProfileRelatedField(
+        queryset=PatientProfile.objects.all(),
         many=True
     )
 
@@ -137,19 +106,29 @@ class PatientProfileSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = PatientProfile
+        model = ExpertProfile
         fields = '__all__'
 
 
-class PatientGroupSerializer(serializers.ModelSerializer):
+class ExpertClassSerializer (serializers.ModelSerializer):
 
-    group_messages = serializers.SerializerMethodField()
+    members = ExpertClassRelatedField(
+        queryset=ExpertClass.objects.all(),
+        many=True
+    )
 
-    def get_group_messages(self, PatientGroup):
-        mess = Messages.objects.all().values('author__username','message','receiver_group_id__name')
+    class_modules = ClassModulesRelatedField(
+        queryset=ClassModules.objects.all(),
+        many=True
+    )
+
+    message = serializers.SerializerMethodField()
+
+    def get_message(self, ExpertClass):
+        mess = Messages.objects.filter(receiver_class_id=ExpertClass.id).values('author_id__username','message')
         mess = jsons.dump(mess) # gets the queryset serlizable
         return mess
 
     class Meta:
-        model = PatientGroup
-        fields = ('name', 'description', 'group_messages')
+        model = ExpertClass
+        fields = '__all__'
