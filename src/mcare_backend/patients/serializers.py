@@ -8,11 +8,13 @@ from experts.models import ExpertProfile, ExpertClass
 
 
 '''
-This RelatedField classes allows the flexibility of the model in the response object.
+This RelatedField classes allows the flexibility of the model
+in the response object.
 By default, the pk is displayed in the post or get request. By defining this
 class, we can specify how we want the message to be represented in the
 reponse
-reference: https://stackoverflow.com/questions/55161052/instead-of-primary-key-send-different-field-in-django-rest-framework
+reference:
+https://stackoverflow.com/questions/55161052/instead-of-primary-key-send-different-field-in-django-rest-framework
 '''
 
 
@@ -63,21 +65,6 @@ class CustomUserRelatedField(serializers.RelatedField):
     # gets an object Message for the given value
     def to_internal_value(self, data):
         return CustomUser.objects.get(name=data)
-
-
-class PatientGroupRelatedField(serializers.RelatedField):
-
-    # defines how the object is displayed
-    def display_value(self, instance):
-        return instance
-
-    # defines how the object Genre is displayed in the output (JSON or XML)
-    def to_representation(self, value):
-        return str(value)
-
-    # gets an object Message for the given value
-    def to_internal_value(self, data):
-        return PatientGroup.objects.get(name=data)
 
 
 class ExpertProfileRelatedField(serializers.RelatedField):
@@ -146,8 +133,9 @@ class PatientGroupSerializer(serializers.ModelSerializer):
     group_messages = serializers.SerializerMethodField()
 
     def get_group_messages(self, PatientGroup):
-        mess = Messages.objects.all().values('author__username','message','receiver_group_id__name')
-        mess = jsons.dump(mess) # gets the queryset serlizable
+        mess = Messages.objects.all().values(
+            'author__username', 'message', 'receiver_group_id__name')
+        mess = jsons.dump(mess)  # gets the queryset serlizable
         return mess
 
     class Meta:

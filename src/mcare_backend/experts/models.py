@@ -33,9 +33,11 @@ class ExpertProfile(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name="expert_profile")
     bio = models.TextField(null=True, blank=True)
-    gender = models.CharField(max_length=10, null=True, blank=True) # todo hotcode this
+    # todo hotcode this
+    gender = models.CharField(max_length=10, null=True, blank=True)
+    # todo limit the messages to he self created ones
     message = models.ManyToManyField(
-        'patients.Messages', blank=True) # todo limit the messages to he self created ones
+        'patients.Messages', blank=True)
     assigned_patients = models.ManyToManyField(
         'patients.PatientProfile', blank=True)
     list_of_classes = models.ManyToManyField(

@@ -125,8 +125,10 @@ class ExpertClassSerializer (serializers.ModelSerializer):
     message = serializers.SerializerMethodField()
 
     def get_message(self, ExpertClass):
-        mess = Messages.objects.filter(receiver_class_id=ExpertClass.id).values('author_id__username','message')
-        mess = jsons.dump(mess) # gets the queryset serlizable
+        mess = Messages.objects.filter(
+            receiver_class_id=ExpertClass.id).values(
+                'author_id__username', 'message')
+        mess = jsons.dump(mess)  # gets the queryset serlizable
         return mess
 
     class Meta:
