@@ -1,0 +1,1 @@
+web: gunicorn mcare_backend.wsgi --log-file -
