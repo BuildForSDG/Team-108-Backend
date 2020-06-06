@@ -21,4 +21,3 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     http_method_names = ['post']
     permission_classes = [AllowAny]
-

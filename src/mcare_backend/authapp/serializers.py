@@ -58,7 +58,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         Returns:
             user object -- Sets the password and returns the user.
         """
-
+  
         user = CustomUser(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
@@ -78,3 +78,16 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+
+class PatientProfileSerializer(serializers.ModelSerializer):
+
+    owner = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = PatientProfile
+        fields = ('id', 'name', 'owner')
+
