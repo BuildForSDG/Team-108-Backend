@@ -9,7 +9,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     """Serializser for custom user model
 
     Arguments:
-        serializers {ModelSerializer} -- creates field that corresponds to the 
+        serializers {ModelSerializer} -- creates field that corresponds to the
         custom user model
 
     Raises:
@@ -44,7 +44,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'firstname',
-                  'lastname', 'role', 'password', 'password2','tokens']
+                  'lastname', 'role', 'password', 'password2', 'tokens']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -58,7 +58,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         Returns:
             user object -- Sets the password and returns the user.
         """
-  
+
         user = CustomUser(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
@@ -80,14 +80,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
 
 
+# class PatientProfileSerializer(serializers.ModelSerializer):
 
-class PatientProfileSerializer(serializers.ModelSerializer):
+#     owner = serializers.HiddenField(
+#         default=serializers.CurrentUserDefault()
+#     )
 
-    owner = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
-
-    class Meta:
-        model = PatientProfile
-        fields = ('id', 'name', 'owner')
-
+#     class Meta:
+#         model = PatientProfile
+#         fields = ('id', 'name', 'owner')
