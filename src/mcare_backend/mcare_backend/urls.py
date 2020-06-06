@@ -16,7 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+
+from patients.urls import router as patient_router
+from experts.urls import router as expert_router
+from authapp.urls import router as auth_routers
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/authuser/', include('authapp.urls'))
+    path('api/v1/authapp/', include('authapp.urls')),
+    path('api/v1/user/', include(patient_router.urls)),
+    path('api/v1/expert/', include(expert_router.urls)),
+    path('api/v1/', include(auth_routers.urls)),
 ]

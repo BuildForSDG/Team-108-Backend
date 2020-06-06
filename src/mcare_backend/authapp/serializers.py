@@ -1,22 +1,64 @@
 from rest_framework import serializers
 
-from authapp.models import CustomUser, PatientProfile
+from authapp.models import CustomUser
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    """Serializser for custom user model
 
+    Arguments:
+        serializers {ModelSerializer} -- creates field that corresponds to the 
+        custom user model
+
+    Raises:
+        serializers.ValidationError: for password mismatch
+
+    Returns:
+        serialized object
+    """
+
+    tokens = serializers.SerializerMethodField()
     password2 = serializers.CharField(
         style={'input_type': 'password'}, write_only=True)
+
+    def get_tokens(self, CustomUser):
+        """Get token pair for users
+
+        Arguments:
+            CustomUser {cls} -- the custom user model
+
+        Returns:
+            array -- An array of token
+        """
+
+        if self.context['request'].POST:
+            refresh = RefreshToken.for_user(self.context['request'].user)
+            data = {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token)
+                }
+            return data
 
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'firstname',
-                  'lastname', 'role', 'password', 'password2']
+                  'lastname', 'role', 'password', 'password2','tokens']
         extra_kwargs = {
             'password': {'write_only': True}
         }
 
     def save(self):
+        """Over-riding the defaut save on serializers
+
+        Raises:
+            serializers.ValidationError: for password mismatch
+
+        Returns:
+            user object -- Sets the password and returns the user.
+        """
+  
         user = CustomUser(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
@@ -38,6 +80,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
 
 
+
 class PatientProfileSerializer(serializers.ModelSerializer):
 
     owner = serializers.HiddenField(
@@ -47,3 +90,4 @@ class PatientProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientProfile
         fields = ('id', 'name', 'owner')
+

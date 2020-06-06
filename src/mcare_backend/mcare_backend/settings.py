@@ -38,9 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # installed apps
     'authapp',
+    'patients',
+    'experts',
+
+    #  rest API implementation library for django
+    'rest_framework',
 
     # for token authentication
     'rest_framework.authtoken',
@@ -51,9 +57,11 @@ INSTALLED_APPS = [
 
 ]
 
+SITE_ID = 1
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

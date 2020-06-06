@@ -1,7 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
-from authapp.models import CustomUser, PatientProfile, ExpertProfile
+
+from authapp.models import CustomUser
+from patients.models import PatientProfile
+from experts.models import ExpertProfile
 
 
 data_password = {
