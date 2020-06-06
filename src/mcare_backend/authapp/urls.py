@@ -1,17 +1,20 @@
 from django.urls import path
+from rest_framework import routers
 
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 from authapp.views import (
-    customuser_registration_view,
-    hello_world
+    CustomUserViewSet
 )
 
 app_name = 'authapp'
+router = routers.DefaultRouter()
+router.register(r'register', CustomUserViewSet)
 
 urlpatterns = [
-    path('register', customuser_registration_view, name='register'),
-    path('login', obtain_auth_token, name='login'),
-    path('helloworld', hello_world, name='helloworld')
-
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

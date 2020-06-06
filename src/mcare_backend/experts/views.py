@@ -1,17 +1,21 @@
 from rest_framework import viewsets
 
-from experts.serializers import ExpertProfileSerializer, ExpertClassSerializer
-from experts.models import ExpertProfile, ExpertClass
+from experts.serializers import (
+    ExpertClassSerializer,
+    CustomUserSerializer,
+    
+    )
+from experts.models import ExpertClass
+from authapp.models import CustomUser as ExpertUser
 
 
-# Create your views here.
-class ExpertProfileViewSet(viewsets.ModelViewSet):
+class ExpertUserViewSet(viewsets.ModelViewSet):
     """
     A viewset for viewing and editing Expertprofile instances.
     """
 
-    serializer_class = ExpertProfileSerializer
-    queryset = ExpertProfile.objects.all()
+    serializer_class = CustomUserSerializer
+    queryset = ExpertUser.objects.filter(role='Expert')
 
 
 class ExpertClassViewSet(viewsets.ModelViewSet):

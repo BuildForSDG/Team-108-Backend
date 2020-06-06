@@ -11,7 +11,7 @@ def get_custom_user():
 
 
 class Messages(models.Model):
-    author = models.ForeignKey(
+    author = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.SET(get_custom_user),
         null=True, blank=True)
     message = models.TextField(null=True, blank=True)
@@ -34,12 +34,10 @@ class PatientProfile(models.Model):
                                 limit_choices_to={'role': 'Patient'},
                                 on_delete=models.CASCADE,
                                 related_name="patient_profile")
-    # username = models.CharField(max_length=50,blank=True,default='user')
     bio = models.TextField(null=True, blank=True)
     gender = models.CharField(max_length=10, null=True, blank=True)
     message = models.ManyToManyField(
         'Messages', blank=True)
-    # todo limit the messages to he self created ones
     group_member = models.ManyToManyField(
         'PatientGroup', blank=True)
     assigned_experts = models.ManyToManyField(

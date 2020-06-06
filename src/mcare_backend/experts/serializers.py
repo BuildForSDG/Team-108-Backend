@@ -6,10 +6,15 @@ from authapp.models import CustomUser
 from experts.models import ExpertProfile, ExpertClass, ClassModules
 
 
-# todo what's the related field in seriliazers
-# todo so many repetitions. RelatedField Class and their methods,
-# todo DRY code needed here
 class MessagesRelatedField(serializers.RelatedField):
+    """A serliazer class of type related field,
+    overides how the output messages in the
+    serializers
+
+    Arguments:
+        serializers {RelatedField} --
+        for defining how the output messages
+    """
 
     # defines how the object is displayed
     def display_value(self, instance):
@@ -25,6 +30,14 @@ class MessagesRelatedField(serializers.RelatedField):
 
 
 class ClassModulesRelatedField(serializers.RelatedField):
+    """A serliazer class of type related field,
+    overides how the output class modules in the
+    serializers
+
+    Arguments:
+        serializers {RelatedField} --
+        for defining how the output class modules
+    """
 
     # defines how the object is displayed
     def display_value(self, instance):
@@ -39,22 +52,15 @@ class ClassModulesRelatedField(serializers.RelatedField):
         return ClassModules.objects.get(name=data)
 
 
-class CustomUserRelatedField(serializers.RelatedField):
-
-    # defines how the object is displayed
-    def display_value(self, instance):
-        return instance
-
-    # defines how the object Genre is displayed in the output (JSON or XML)
-    def to_representation(self, value):
-        return str(value)
-
-    # gets an object Message for the given value
-    def to_internal_value(self, data):
-        return CustomUser.objects.get(name=data)
-
-
 class PatientProfileRelatedField(serializers.RelatedField):
+    """A serliazer class of type related field,
+    overides how the output patient profile in the
+    serializers
+
+    Arguments:
+        serializers {RelatedField} --
+        for defining how the output patient profile
+    """
 
     # defines how the object is displayed
     def display_value(self, instance):
@@ -70,6 +76,14 @@ class PatientProfileRelatedField(serializers.RelatedField):
 
 
 class ExpertClassRelatedField(serializers.RelatedField):
+    """A serliazer class of type related field,
+    overides how the output expert class in the
+    serializers
+
+    Arguments:
+        serializers {RelatedField} --
+        for defining how the output expert class
+    """
 
     # defines how the object is displayed
     def display_value(self, instance):
@@ -85,32 +99,46 @@ class ExpertClassRelatedField(serializers.RelatedField):
 
 
 class ExpertProfileSerializer(serializers.ModelSerializer):
+    """An expert profile serializer class
 
-    message = MessagesRelatedField(
-        queryset=Messages.objects.all(),
-        many=True
-    )
-
-    user = CustomUserRelatedField(
-        queryset=CustomUser.objects.all(),
-    )
-
-    assigned_patients = PatientProfileRelatedField(
-        queryset=PatientProfile.objects.all(),
-        many=True
-    )
+    Arguments:
+        serializers {ModelSerializer} -- serializes according to the
+        expert profile model
+    """
 
     list_of_classes = ExpertClassRelatedField(
         queryset=ExpertClass.objects.all(),
         many=True
     )
-
+    
     class Meta:
         model = ExpertProfile
-        fields = '__all__'
+        fields = ['bio', 'list_of_classes']
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    """A nexted custom user serializer class. Expertprofile
+    serializer is nested in it
+
+    Arguments:
+        serializers {ModelSerializer} -- serializes according to the
+        custom user model
+    """
+
+    expert_profile = ExpertProfileSerializer(read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'firstname','lastname','email', 'expert_profile']
 
 
 class ExpertClassSerializer (serializers.ModelSerializer):
+    """An expert class serializer class
+
+    Arguments:
+        serializers {ModelSerializer} -- serializes according to the
+        expert class model
+    """
 
     members = ExpertClassRelatedField(
         queryset=ExpertClass.objects.all(),

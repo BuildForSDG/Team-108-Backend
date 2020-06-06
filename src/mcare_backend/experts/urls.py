@@ -1,15 +1,13 @@
 from rest_framework import routers
 
 
-from .views import ExpertProfileViewSet, ExpertClassViewSet
+from .views import (
+    ExpertClassViewSet,
+    ExpertUserViewSet)
 
 
 router = routers.DefaultRouter()
-router.register(r'experts', ExpertProfileViewSet)
-router.register(r'class', ExpertClassViewSet)
+router.register(r'profiles', ExpertUserViewSet)
+router.register(r'classes', ExpertClassViewSet)
 
-
-# urlpatterns = [
-#     path(r'patients/', include(router.urls)),
-# ]
 urlpatterns = router.urls

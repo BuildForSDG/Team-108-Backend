@@ -3,7 +3,6 @@ import jsons
 from rest_framework import serializers
 
 from patients.models import PatientProfile, Messages, PatientGroup
-from authapp.models import CustomUser
 from experts.models import ExpertProfile, ExpertClass
 
 
@@ -18,10 +17,6 @@ https://stackoverflow.com/questions/55161052/instead-of-primary-key-send-differe
 '''
 
 
-# todo what's the related field in seriliazers
-# todo so many repetitions. RelatedField Class and their methods,
-# todo DRY code needed here
-
 class PatientGroupRelatedField(serializers.RelatedField):
 
     # defines how the object is displayed
@@ -35,36 +30,6 @@ class PatientGroupRelatedField(serializers.RelatedField):
     # gets an object Message for the given value
     def to_internal_value(self, data):
         return PatientGroup.objects.get(name=data)
-
-
-class MessagesRelatedField(serializers.RelatedField):
-
-    # defines how the object is displayed
-    def display_value(self, instance):
-        return instance
-
-    # defines how the object Genre is displayed in the output (JSON or XML)
-    def to_representation(self, value):
-        return str(value)
-
-    # gets an object Message for the given value
-    def to_internal_value(self, data):
-        return Messages.objects.get(name=data)
-
-
-class CustomUserRelatedField(serializers.RelatedField):
-
-    # defines how the object is displayed
-    def display_value(self, instance):
-        return instance
-
-    # defines how the object Genre is displayed in the output (JSON or XML)
-    def to_representation(self, value):
-        return str(value)
-
-    # gets an object Message for the given value
-    def to_internal_value(self, data):
-        return CustomUser.objects.get(name=data)
 
 
 class ExpertProfileRelatedField(serializers.RelatedField):
@@ -99,15 +64,6 @@ class ExpertClassRelatedField(serializers.RelatedField):
 
 class PatientProfileSerializer(serializers.ModelSerializer):
 
-    message = MessagesRelatedField(
-        queryset=Messages.objects.all(),
-        many=True
-    )
-
-    user = CustomUserRelatedField(
-        queryset=CustomUser.objects.all(),
-    )
-
     group_member = PatientGroupRelatedField(
         queryset=PatientGroup.objects.all(),
         many=True
@@ -123,6 +79,10 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         many=True
     )
 
+    message = serializers.ListSerializer(child=serializers.CharField())
+    user = serializers.StringRelatedField()
+    message = serializers.ListSerializer(child=serializers.CharField())
+
     class Meta:
         model = PatientProfile
         fields = '__all__'
@@ -133,11 +93,32 @@ class PatientGroupSerializer(serializers.ModelSerializer):
     group_messages = serializers.SerializerMethodField()
 
     def get_group_messages(self, PatientGroup):
-        mess = Messages.objects.all().values(
-            'author__username', 'message', 'receiver_group_id__name')
-        mess = jsons.dump(mess)  # gets the queryset serlizable
-        return mess
+        group_messages = Messages.objects.filter(
+            receiver_group_id__name=PatientGroup.name).values(
+            'author__username', 'message')
+        group_messages_to_json = jsons.dump(
+            group_messages)  # gets the queryset serlizable
+        return group_messages_to_json
+
+    group_members = serializers.SerializerMethodField()
+
+    def get_group_members(self, PatientGroup):
+        group_members = PatientProfile.objects.filter(
+            group_member__name=PatientGroup.name).values(
+                'user__username'
+        )
+        group_members_to_json = jsons.dump(group_members)
+        return group_members_to_json
 
     class Meta:
         model = PatientGroup
-        fields = ('name', 'description', 'group_messages')
+        fields = ('name', 'description', 'group_messages', 'group_members')
+
+
+class MessagesSerializer(serializers.ModelSerializer):
+
+    receiver_expert = PatientProfileSerializer(read_only=True)
+
+    class Meta:
+        model = Messages
+        fields = ['message', 'receiver_expert']

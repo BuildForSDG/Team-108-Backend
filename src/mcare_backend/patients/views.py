@@ -2,11 +2,17 @@ from rest_framework import viewsets
 
 from patients.serializers import (
     PatientProfileSerializer,
-    PatientGroupSerializer)
-from patients.models import PatientProfile, PatientGroup
+    PatientGroupSerializer,
+    MessagesSerializer
+)
+
+from patients.models import (
+    PatientProfile,
+    PatientGroup,
+    Messages
+)
 
 
-# Create your views here.
 class PatientProfileViewSet(viewsets.ModelViewSet):
     """
     A viewset for viewing and editing patientprofile instances.
@@ -23,3 +29,12 @@ class PatientGroupViewSet(viewsets.ModelViewSet):
 
     serializer_class = PatientGroupSerializer
     queryset = PatientGroup.objects.all()
+
+
+class MessagesViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing Messages instances.
+    """
+
+    serializer_class = MessagesSerializer
+    queryset = Messages.objects.all()
