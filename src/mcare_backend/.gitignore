@@ -1,0 +1,15 @@
+# FILES
+**/**/.pyc
+.DS_Store
+passwords.txt
+tests_parameters.py
+.coverage
+db.sqlite3
+
+# DIRECTORIES
+**/**/__pycache__
+.vscode/
+.pytest_cache
+src.egg-info
+htmlcov/
+env/
