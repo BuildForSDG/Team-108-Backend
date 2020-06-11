@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from patients.models import PatientProfile, Messages, PatientGroup
 from experts.models import ExpertProfile, ExpertClass
+from authapp.models import CustomUser
 
 
 '''
@@ -80,12 +81,37 @@ class PatientProfileSerializer(serializers.ModelSerializer):
     )
 
     message = serializers.ListSerializer(child=serializers.CharField())
-    user = serializers.StringRelatedField()
-    message = serializers.ListSerializer(child=serializers.CharField())
 
     class Meta:
         model = PatientProfile
-        fields = '__all__'
+        fields = [
+            'assigned_experts',
+            'list_of_classes',
+            'message',
+            'group_member'
+            ]
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    """A nexted custom user serializer class. Expertprofile
+    serializer is nested in it
+
+    Arguments:
+        serializers {ModelSerializer} -- serializes according to the
+        custom user model
+    """
+
+    patient_profile = PatientProfileSerializer(read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'username',
+            'firstname',
+            'lastname',
+            'email',
+            'patient_profile'
+            ]
 
 
 class PatientGroupSerializer(serializers.ModelSerializer):

@@ -2,10 +2,10 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from .views import PatientProfileViewSet, PatientGroupViewSet, MessagesViewSet
+from .views import PatientUserViewSet, PatientGroupViewSet, MessagesViewSet
 
 router = routers.DefaultRouter()
-router.register(r'profiles', PatientProfileViewSet)
+router.register(r'profiles', PatientUserViewSet)
 router.register(r'groups', PatientGroupViewSet)
 router.register(r'messages', MessagesViewSet)
 
