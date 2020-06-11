@@ -1,9 +1,13 @@
 from rest_framework import viewsets
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import (
     AllowAny,
 )
 
-from authapp.serializers import CustomUserSerializer
+from authapp.serializers import (
+    CustomUserSerializer, 
+    MyTokenObtainPairSerializer
+    )
 
 from .models import CustomUser
 
@@ -20,3 +24,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     http_method_names = ['post']
     permission_classes = [AllowAny]
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
