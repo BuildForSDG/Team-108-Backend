@@ -55,4 +55,6 @@ class PatientGroup(models.Model):
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
+        if self.name is None:
+            return "GROUP NAME IS NULL"
         return self.name

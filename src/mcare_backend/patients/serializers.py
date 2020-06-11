@@ -138,7 +138,7 @@ class PatientGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientGroup
-        fields = ('name', 'description', 'group_messages', 'group_members')
+        fields = ('id','name', 'description', 'group_messages', 'group_members')
 
 
 class MessagesSerializer(serializers.ModelSerializer):
