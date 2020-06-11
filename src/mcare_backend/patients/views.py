@@ -1,25 +1,26 @@
 from rest_framework import viewsets
 
 from patients.serializers import (
-    PatientProfileSerializer,
     PatientGroupSerializer,
-    MessagesSerializer
+    MessagesSerializer,
+    CustomUserSerializer
 )
 
 from patients.models import (
-    PatientProfile,
     PatientGroup,
     Messages
 )
 
+from authapp.models import CustomUser as PatientUser
 
-class PatientProfileViewSet(viewsets.ModelViewSet):
+
+class PatientUserViewSet(viewsets.ModelViewSet):
     """
     A viewset for viewing and editing patientprofile instances.
     """
 
-    serializer_class = PatientProfileSerializer
-    queryset = PatientProfile.objects.all()
+    serializer_class = CustomUserSerializer
+    queryset = PatientUser.objects.filter(role='Patient')
 
 
 class PatientGroupViewSet(viewsets.ModelViewSet):
