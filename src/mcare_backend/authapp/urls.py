@@ -8,7 +8,8 @@ from rest_framework_simplejwt.views import (
 )
 
 from authapp.views import (
-    CustomUserViewSet
+    CustomUserViewSet,
+    MyTokenObtainPairView
 )
 
 app_name = 'authapp'
@@ -16,6 +17,6 @@ router = routers.DefaultRouter()
 router.register(r'register', CustomUserViewSet)
 
 urlpatterns = [
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

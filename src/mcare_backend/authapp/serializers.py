@@ -3,6 +3,7 @@ from rest_framework import serializers
 from authapp.models import CustomUser
 
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -36,6 +37,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         if self.context['request'].POST:
             refresh = RefreshToken.for_user(self.context['request'].user)
             data = {
+                'user_id': user.id,
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
                 }
@@ -80,12 +82,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
 
 
-# class PatientProfileSerializer(serializers.ModelSerializer):
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
 
-#     owner = serializers.HiddenField(
-#         default=serializers.CurrentUserDefault()
-#     )
-
-#     class Meta:
-#         model = PatientProfile
-#         fields = ('id', 'name', 'owner')
+        # added username to responses
+        # this can be used to the profile page for the user
+        # get more personalised content for the user
+        data['username'] = self.user.username
+        return data
