@@ -110,7 +110,7 @@ class ExpertProfileSerializer(serializers.ModelSerializer):
         queryset=ExpertClass.objects.all(),
         many=True
     )
-    
+
     class Meta:
         model = ExpertProfile
         fields = ['bio', 'list_of_classes']
@@ -129,7 +129,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'firstname','lastname','email', 'expert_profile']
+        fields = [
+            'username',
+            'firstname',
+            'lastname',
+            'email',
+            'expert_profile'
+            ]
 
 
 class ExpertClassSerializer (serializers.ModelSerializer):

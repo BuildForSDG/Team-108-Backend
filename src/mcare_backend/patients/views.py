@@ -8,7 +8,8 @@ from patients.serializers import (
 
 from patients.models import (
     PatientGroup,
-    Messages
+    Messages,
+    PatientProfile
 )
 
 from authapp.models import CustomUser as PatientUser
@@ -21,6 +22,23 @@ class PatientUserViewSet(viewsets.ModelViewSet):
 
     serializer_class = CustomUserSerializer
     queryset = PatientUser.objects.filter(role='Patient')
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        action = self.action
+        if (action == 'update'):
+            if self.request.POST:
+                # todo handle error when this fails
+                user = PatientProfile.objects.get(
+                    user=self.request.user
+                    )
+                # todo handle error when this fails
+                group = PatientGroup.objects.get(
+                    id=self.request.data['id']
+                    )
+                user.group_member.add(group)
+                user.save()
+        return context
 
 
 class PatientGroupViewSet(viewsets.ModelViewSet):
