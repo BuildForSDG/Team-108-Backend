@@ -31,6 +31,20 @@ class PatientGroupViewSet(viewsets.ModelViewSet):
     serializer_class = PatientGroupSerializer
     queryset = PatientGroup.objects.all()
 
+    # needed to help with group creation by any user
+    # Todo limit to patients only
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        action = self.action
+        if (action == 'create'):
+            if self.request.POST:
+                new_group = PatientGroup(
+                    name=self.request.data['name'],
+                    description=self.request.data['description']
+                    )
+                new_group.save()
+        return context
+
 
 class MessagesViewSet(viewsets.ModelViewSet):
     """

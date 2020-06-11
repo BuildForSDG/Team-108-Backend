@@ -49,6 +49,7 @@ class PatientProfile(models.Model):
         return self.user.username
 
 
+# todo groupname should be unique
 class PatientGroup(models.Model):
     name = models.CharField(max_length=240, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
