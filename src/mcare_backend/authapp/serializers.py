@@ -92,5 +92,5 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # added username to responses
         # this can be used to the profile page for the user
         # get more personalised content for the user
-        data['username'] = self.user.username
+        data['user_id'] = self.user.id
         return data
