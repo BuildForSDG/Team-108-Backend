@@ -81,15 +81,18 @@ class PatientProfileSerializer(serializers.ModelSerializer):
     )
 
     message = serializers.ListSerializer(child=serializers.CharField())
+    user = serializers.StringRelatedField()
 
     class Meta:
         model = PatientProfile
         fields = [
+            'id',
+            'user',
             'assigned_experts',
             'list_of_classes',
             'message',
             'group_member'
-            ]
+        ]
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

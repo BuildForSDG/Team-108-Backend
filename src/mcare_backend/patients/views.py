@@ -47,7 +47,6 @@ class PatientUserViewSet(viewsets.ModelViewSet):
                 expert = ExpertProfile.objects.get(
                     user__username=self.request.data['expert_name']
                 )
-                print(expert)
                 user.assigned_experts.add(expert)
                 expert.assigned_patients.add(user)
                 user.save()

@@ -5,6 +5,8 @@ from patients.models import PatientProfile, Messages
 from authapp.models import CustomUser
 from experts.models import ExpertProfile, ExpertClass, ClassModules
 
+from patients.serializers import PatientProfileSerializer
+
 
 class MessagesRelatedField(serializers.RelatedField):
     """A serliazer class of type related field,
@@ -108,7 +110,7 @@ class ExpertProfileSerializer(serializers.ModelSerializer):
 
     list_of_classes = serializers.ListSerializer(child=serializers.CharField())
 
-    assigned_patients = serializers.ListSerializer(child=serializers.CharField())
+    assigned_patients = PatientProfileSerializer(many=True)
 
     class Meta:
         model = ExpertProfile
