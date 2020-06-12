@@ -106,14 +106,13 @@ class ExpertProfileSerializer(serializers.ModelSerializer):
         expert profile model
     """
 
-    list_of_classes = ExpertClassRelatedField(
-        queryset=ExpertClass.objects.all(),
-        many=True
-    )
+    list_of_classes = serializers.ListSerializer(child=serializers.CharField())
+
+    assigned_patients = serializers.ListSerializer(child=serializers.CharField())
 
     class Meta:
         model = ExpertProfile
-        fields = ['bio', 'list_of_classes']
+        fields = ['bio', 'list_of_classes', 'assigned_patients']
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -160,8 +159,10 @@ class ExpertClassSerializer (serializers.ModelSerializer):
 
     def get_message(self, ExpertClass):
         mess = Messages.objects.filter(
-            receiver_class_id=ExpertClass.id).values(
-                'author_id__username', 'message')
+            receiver_class_id=ExpertClass.id
+            ).values(
+                'author_id__username', 'message'
+                )
         mess = jsons.dump(mess)  # gets the queryset serlizable
         return mess
 
