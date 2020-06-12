@@ -34,15 +34,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
             array -- An array of token
         """
 
-        if self.context['request'].POST:
-            refresh = RefreshToken.for_user(self.context['request'].user)
-            data = {
-                'user_id': user.id,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token)
-                }
-            return data
-
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'firstname',
