@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+
 from rest_framework import viewsets
 
 from patients.serializers import (
@@ -34,25 +35,24 @@ class PatientUserViewSet(viewsets.ModelViewSet):
             user = PatientProfile.objects.get(
                 user=self.request.user
             )
-            if self.request.POST:
-                try:
-                    group = PatientGroup.objects.get(
-                        id=self.request.POST.get('group_id', None)
-                    )
-                    user.group_member.add(group)
-                except ObjectDoesNotExist:
-                    pass
-
-                try:
-                    expert = ExpertProfile.objects.get(
-                        user__username=self.request.POST.get(
-                            'expert_name', None
-                        )
-                    )
-                    user.assigned_experts.add(expert)
-                    
-                except ObjectDoesNotExist:
-                    pass  
+            try:
+                group = PatientGroup.objects.get(
+                    id=self.request.POST.get('group_id', None)
+                )
+                user.group_member.add(group)
+                user.save()
+            except ObjectDoesNotExist:
+                pass
+            try:
+                expert = ExpertProfile.objects.get(
+                    user__username=self.request.data['expert_name']
+                )
+                print(expert)
+                user.assigned_experts.add(expert)
+                expert.assigned_patients.add(user)
+                user.save()
+            except ObjectDoesNotExist:
+                pass
         return context
 
 
