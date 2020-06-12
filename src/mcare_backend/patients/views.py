@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets
 
 from patients.serializers import (
@@ -11,6 +12,8 @@ from patients.models import (
     Messages,
     PatientProfile
 )
+
+from experts.models import ExpertProfile
 
 from authapp.models import CustomUser as PatientUser
 
@@ -27,17 +30,29 @@ class PatientUserViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         action = self.action
         if (action == 'update'):
+            # todo handle error when this fails
+            user = PatientProfile.objects.get(
+                user=self.request.user
+            )
             if self.request.POST:
-                # todo handle error when this fails
-                user = PatientProfile.objects.get(
-                    user=self.request.user
+                try:
+                    group = PatientGroup.objects.get(
+                        id=self.request.POST.get('group_id', None)
                     )
-                # todo handle error when this fails
-                group = PatientGroup.objects.get(
-                    id=self.request.data['id']
+                    user.group_member.add(group)
+                except ObjectDoesNotExist:
+                    pass
+
+                try:
+                    expert = ExpertProfile.objects.get(
+                        user__username=self.request.POST.get(
+                            'expert_name', None
+                        )
                     )
-                user.group_member.add(group)
-                user.save()
+                    user.assigned_experts.add(expert)
+                    
+                except ObjectDoesNotExist:
+                    pass  
         return context
 
 
