@@ -1,9 +1,15 @@
+import jsons
+
 from rest_framework import serializers
 
 from authapp.models import CustomUser
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from patients.models import PatientProfile
+from experts.models import ExpertProfile
+from experts.serializers import ExpertClassSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -93,3 +99,103 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # get more personalised content for the user
         data['user_id'] = self.user.id
         return data
+
+
+class PatientProfileSerializer(serializers.ModelSerializer):
+    """Model Serializer foor the Patient Profile Model. Needed to serialize
+    patient-profile-specific data
+
+    Args:
+        serializers (Model): Serializes the patient profile model
+    """
+
+    assigned_experts = serializers.SerializerMethodField()
+
+    def get_assigned_experts(self, PatientProfile):
+        my_experts = ExpertProfile.objects.filter(
+            assigned_patients__user_id__exact=self.context['request'].user.id
+            ).values(
+                'user__id',
+                'user__username',
+                'user__firstname',
+                'user__lastname',
+                'bio'
+            )
+        my_experts_to_json = jsons.dump(
+            my_experts)  # gets the queryset serlizable
+        return my_experts_to_json
+    list_of_classes = ExpertClassSerializer(many=True)
+
+    message = serializers.ListSerializer(child=serializers.CharField())
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        model = PatientProfile
+        fields = [
+            'id',
+            'user',
+            'assigned_experts',
+            'list_of_classes',
+            'message',
+            'group_member'
+        ]
+
+
+class ExpertProfileSerializer(serializers.ModelSerializer):
+    """An expert profile serializer class
+
+    Arguments:
+        serializers {ModelSerializer} -- serializes according to the
+        expert profile model
+    """
+
+    list_of_classes = serializers.ListSerializer(child=serializers.CharField())
+
+    assigned_patients = PatientProfileSerializer(many=True)
+
+    class Meta:
+        model = ExpertProfile
+        fields = ['user_id', 'bio', 'list_of_classes', 'assigned_patients']
+
+
+class PatientUserSerializer(serializers.ModelSerializer):
+    """A nested model serializer. Primarily from CustomUser model excluding
+    the experts, nesting the PatientProfile Serializer
+
+    Args:
+        serializers (nested model): A nested model serializer
+    """
+
+    patient_profile = PatientProfileSerializer(read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'username',
+            'firstname',
+            'lastname',
+            'email',
+            'patient_profile'
+            ]
+
+
+class ExpertUserSerializer(serializers.ModelSerializer):
+    """A nexted custom user serializer class. Expertprofile
+    serializer is nested in it
+
+    Arguments:
+        serializers {ModelSerializer} -- serializes according to the
+        custom user model
+    """
+
+    expert_profile = ExpertProfileSerializer(read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'username',
+            'firstname',
+            'lastname',
+            'email',
+            'expert_profile'
+            ]

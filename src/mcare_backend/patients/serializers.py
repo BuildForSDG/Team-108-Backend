@@ -2,11 +2,11 @@ import jsons
 
 from rest_framework import serializers
 
-from patients.models import PatientProfile, Messages, PatientGroup
+from patients.models import Messages, PatientGroup
 from experts.models import ExpertProfile, ExpertClass
-from authapp.models import CustomUser
+from authapp.models import PatientProfile
 
-
+from authapp.serializers import PatientProfileSerializer
 '''
 This RelatedField classes allows the flexibility of the model
 in the response object.
@@ -63,58 +63,50 @@ class ExpertClassRelatedField(serializers.RelatedField):
         return ExpertClass.objects.get(name=data)
 
 
-class PatientProfileSerializer(serializers.ModelSerializer):
+# class PatientProfileSerializer(serializers.ModelSerializer):
 
-    group_member = PatientGroupRelatedField(
-        queryset=PatientGroup.objects.all(),
-        many=True
-    )
+#     group_member = PatientGroupRelatedField(
+#         queryset=PatientGroup.objects.all(),
+#         many=True
+#     )
 
-    assigned_experts = ExpertProfileRelatedField(
-        queryset=ExpertProfile.objects.all(),
-        many=True
-    )
+#     list_of_classes = serializers.ListSerializer(child=serializers.CharField())
+#     id =  serializers.URLField()
 
-    list_of_classes = ExpertClassRelatedField(
-        queryset=ExpertClass.objects.all(),
-        many=True
-    )
+#     message = serializers.ListSerializer(child=serializers.CharField())
+#     user = serializers.StringRelatedField()
 
-    message = serializers.ListSerializer(child=serializers.CharField())
-    user = serializers.StringRelatedField()
-
-    class Meta:
-        model = PatientProfile
-        fields = [
-            'id',
-            'user',
-            'assigned_experts',
-            'list_of_classes',
-            'message',
-            'group_member'
-        ]
+#     class Meta:
+#         model = PatientProfile
+#         fields = [
+#             'id',
+#             'user',
+#             'list_of_classes',
+#             'message',
+#             'group_member'
+#         ]
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
-    """A nexted custom user serializer class. Expertprofile
-    serializer is nested in it
+# class CustomUserSerializer(serializers.ModelSerializer):
+#     """A nexted custom user serializer class. Patientprofile
+#     serializer is nested in it
 
-    Arguments:
-        serializers {ModelSerializer} -- serializes according to the
-        custom user model
-    """
+#     Arguments:
+#         serializers {ModelSerializer} -- serializes according to the
+#         custom user model
+#     """
 
-    patient_profile = PatientProfileSerializer(read_only=True)
+#     patient_profile = PatientProfileSerializer(read_only=True)
 
-    class Meta:
-        model = CustomUser
-        fields = [
-            'username',
-            'firstname',
-            'lastname',
-            'email',
-            'patient_profile'
-            ]
+#     class Meta:
+#         model = CustomUser
+#         fields = [
+#             'username',
+#             'firstname',
+#             'lastname',
+#             'email',
+#             'patient_profile'
+#             ]
 
 
 class PatientGroupSerializer(serializers.ModelSerializer):

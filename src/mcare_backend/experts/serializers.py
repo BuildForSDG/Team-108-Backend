@@ -2,10 +2,9 @@ import jsons
 from rest_framework import serializers
 
 from patients.models import PatientProfile, Messages
-from authapp.models import CustomUser
-from experts.models import ExpertProfile, ExpertClass, ClassModules
+from experts.models import ExpertClass, ClassModules
 
-from patients.serializers import PatientProfileSerializer
+# from authapp.serializers import PatientProfileSerializer
 
 
 class MessagesRelatedField(serializers.RelatedField):
@@ -100,45 +99,6 @@ class ExpertClassRelatedField(serializers.RelatedField):
         return ExpertClass.objects.get(name=data)
 
 
-class ExpertProfileSerializer(serializers.ModelSerializer):
-    """An expert profile serializer class
-
-    Arguments:
-        serializers {ModelSerializer} -- serializes according to the
-        expert profile model
-    """
-
-    list_of_classes = serializers.ListSerializer(child=serializers.CharField())
-
-    assigned_patients = PatientProfileSerializer(many=True)
-
-    class Meta:
-        model = ExpertProfile
-        fields = ['bio', 'list_of_classes', 'assigned_patients']
-
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    """A nexted custom user serializer class. Expertprofile
-    serializer is nested in it
-
-    Arguments:
-        serializers {ModelSerializer} -- serializes according to the
-        custom user model
-    """
-
-    expert_profile = ExpertProfileSerializer(read_only=True)
-
-    class Meta:
-        model = CustomUser
-        fields = [
-            'username',
-            'firstname',
-            'lastname',
-            'email',
-            'expert_profile'
-            ]
-
-
 class ExpertClassSerializer (serializers.ModelSerializer):
     """An expert class serializer class
 
@@ -152,10 +112,17 @@ class ExpertClassSerializer (serializers.ModelSerializer):
         many=True
     )
 
-    class_modules = ClassModulesRelatedField(
-        queryset=ClassModules.objects.all(),
-        many=True
-    )
+    class_modules = serializers.SerializerMethodField()
+
+    def get_class_modules(self, ExpertClass):
+        mess = ClassModules.objects.filter(
+            expertclass=ExpertClass.id
+            ).values(
+                'id',
+                'title'
+            )
+        mess = jsons.dump(mess)  # gets the queryset serlizable
+        return mess
 
     message = serializers.SerializerMethodField()
 
