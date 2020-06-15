@@ -1,58 +1,14 @@
-from django.core.exceptions import ObjectDoesNotExist
-
 from rest_framework import viewsets
 
 from patients.serializers import (
     PatientGroupSerializer,
-    MessagesSerializer,
-    CustomUserSerializer
+    MessagesSerializer
 )
 
 from patients.models import (
     PatientGroup,
-    Messages,
-    PatientProfile
+    Messages
 )
-
-from experts.models import ExpertProfile
-
-from authapp.models import CustomUser as PatientUser
-
-
-class PatientUserViewSet(viewsets.ModelViewSet):
-    """
-    A viewset for viewing and editing patientprofile instances.
-    """
-
-    serializer_class = CustomUserSerializer
-    queryset = PatientUser.objects.filter(role='Patient')
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        action = self.action
-        if (action == 'update'):
-            # todo handle error when this fails
-            user = PatientProfile.objects.get(
-                user=self.request.user
-            )
-            try:
-                group = PatientGroup.objects.get(
-                    id=self.request.POST.get('group_id', None)
-                )
-                user.group_member.add(group)
-                user.save()
-            except ObjectDoesNotExist:
-                pass
-            try:
-                expert = ExpertProfile.objects.get(
-                    user__username=self.request.data['expert_name']
-                )
-                user.assigned_experts.add(expert)
-                expert.assigned_patients.add(user)
-                user.save()
-            except ObjectDoesNotExist:
-                pass
-        return context
 
 
 class PatientGroupViewSet(viewsets.ModelViewSet):

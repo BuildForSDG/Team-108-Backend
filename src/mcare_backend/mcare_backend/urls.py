@@ -27,5 +27,5 @@ urlpatterns = [
     path('api/v1/authapp/', include('authapp.urls')),
     path('api/v1/user/', include(patient_router.urls)),
     path('api/v1/expert/', include(expert_router.urls)),
-    path('api/v1/', include(auth_routers.urls)),
+    path('api/v1/user/', include(auth_routers.urls)),
 ]

@@ -13,27 +13,6 @@ def get_custom_user():
     return get_user_model().objects.get_or_create(username='deleted')[0]
 
 
-class ExpertClass(models.Model):
-    """
-    A Model Class for holding the expert class
-
-    Attributes:
-        attr1 (cls): a generic model class
-
-    Inheritance:
-        models.Model
-
-    """
-    name = models.CharField(max_length=50)
-    description = models.TextField()
-    members = models.ManyToManyField(
-        'patients.PatientProfile', blank=True)
-    class_modules = models.ManyToManyField('ClassModules', blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class ClassModules(models.Model):
     """
     A django model that handles the Class Modules
@@ -50,6 +29,27 @@ class ClassModules(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ExpertClass(models.Model):
+    """
+    A Model Class for holding the expert class
+
+    Attributes:
+        attr1 (cls): a generic model class
+
+    Inheritance:
+        models.Model
+
+    """
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    members = models.ManyToManyField(
+        'patients.PatientProfile', blank=True)
+    class_modules = models.ManyToManyField(ClassModules, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class ExpertProfile(models.Model):
